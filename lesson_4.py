@@ -146,7 +146,7 @@ class Witcher(Hero):
              hero.health = self.health
              self.health = 0
              break
-                
+
 class Hacker(Hero):
     def __init__(self, name, health, damage):
         super().__init__(name, health, damage, 'TAKE_GIVE')
@@ -172,6 +172,29 @@ class Thor(Hero):
         if stop == 1:
             is_boss_blocked = True
             print(f'Thor {self.name} blocked {boss.name}')
+
+class Avrora(Hero):
+    def __init__(self, name, health, damage):
+        super().__init__(name, health, damage, 'PRETEND_DEAD')
+        self.__blocked_damage = 0
+
+    @property
+    def blocked_damage(self):
+        return self.__blocked_damage
+
+    @blocked_damage.setter
+    def blocked_damage(self, value):
+        self.__blocked_damage = value
+
+    def apply_super_power(self, boss, heroes):
+        pretend = randint(1, 5)
+        if pretend == 2:
+            self.__blocked_damage = self.damage
+            boss.health -= self.__blocked_damage
+            self.health = 0
+            print(f'Avrora {self.name} pretended and reverted {self.__blocked_damage} damage to boss')
+        else:
+            self.__blocked_damage = 0
 
 
 round_number = 0
@@ -214,7 +237,7 @@ def show_statistics(boss, heroes):
 
 
 def start_game():
-    boss = Boss('Lord', 2700, 50)
+    boss = Boss('Lord', 1800, 50)
     warrior_1 = Warrior('Brane', 280, 15)
     warrior_2 = Warrior('Alucard', 270, 20)
     magic = Magic('Subaru', 290, 10)
@@ -224,9 +247,10 @@ def start_game():
     witcher = Witcher('Chill guy', 300,10)
     hacker = Hacker('Mark', 300, 10)
     thor = Thor('Flin', 300, 10)
+    avrora = Avrora('Elsa', 300,10)
 
 
-    heroes_list = [warrior_1, warrior_2, magic, doc, assistant, berserk, witcher,hacker, thor]
+    heroes_list = [warrior_1, warrior_2, magic, doc, assistant, berserk, witcher,hacker, thor,avrora]
 
     show_statistics(boss, heroes_list)
     while not is_game_over(boss, heroes_list):
@@ -234,6 +258,3 @@ def start_game():
 
 
 start_game()
-
-
-
